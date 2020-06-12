@@ -90,3 +90,23 @@ PSCore C:\src> docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 ```
 
+## Cleanup System
+
+To clean up your system from fragments, you'll run a pruning command.
+
+```
+docker system prune
+```
+
+Example:
+
+```
+PSCore C:\src\Docker> docker system prune
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+  - all dangling build cache
+
+Are you sure you want to continue? [y/N] y
+```
