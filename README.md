@@ -27,6 +27,13 @@ This will show all of the existing Docker images on your local machine.
 ```
 docker images
 ```
+
+This will show only the image ID.
+
+```
+docker images -q
+```
+
 Example:
 
 ```
@@ -110,3 +117,123 @@ WARNING! This will remove:
 
 Are you sure you want to continue? [y/N] y
 ```
+
+## Running a container in detached mode
+
+This command will run a new container detached and will host a website on port 8080 of the host and port 80 inside the container.
+
+```
+docker run -d -p 8080:80 --name web1 nginx:alpine
+```
+
+## Get running containers
+
+This command will allow you to view all running containers.
+
+```
+docker ps
+```
+Example:
+
+```
+PSCore C:\src> docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS
+     NAMES
+537bb2ac04d8        nginx:alpine        "/docker-entrypoint.…"   5 minutes ago       Up 5 minutes        0.0.0.0:8080->80/tcp   web1
+```
+
+## Get all containers
+
+This command will allow you to view all containers.  Containers that are stopped and running.
+
+```
+docker ps -a
+```
+
+Example:
+
+```
+PSCore C:\src> docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS                  NAMES
+847bf6a810ce        nginx:alpine        "/docker-entrypoint.…"   22 seconds ago      Exited (0) 5 seconds ago
+            web2
+537bb2ac04d8        nginx:alpine        "/docker-entrypoint.…"   5 minutes ago       Up 5 minutes               0.0.0.0:8080->80/tcp   web1
+```
+
+## Stopping a container
+
+```
+docker stop web1
+```
+
+## Starting a container
+
+```
+docker start web1
+```
+
+## Removing a container
+
+Before removing a container, it's best to stop it first.  You can specify the name of the container or the container ID.
+
+```
+docker rm web1
+```
+
+This command will allow you to stop and remove the container in one line.
+
+```
+docker stop web1 && docker rm web1
+```
+
+## Removing all containers
+
+This command will remove all of your containers and will force them to stop if they are running.
+
+```
+docker rm $(docker ps -aq) -f
+```
+
+## Running a container interactively
+
+```
+docker -it [image] [command]
+```
+
+Example:
+
+In the example, I gave the container a name, which is optional.
+
+```
+PSCore C:\src> docker run -it --name test01 ubuntu bash
+root@da5f8ea05376:/#
+```
+## Viewing running processes inside the container
+
+```
+ps -elf
+```
+
+Example:
+
+You can see bash is the only running process in this container.
+
+```
+root@da5f8ea05376:/# ps -elf
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+4 S root         1     0  0  80   0 -  1028 -      13:46 pts/0    00:00:00 bash
+0 R root        10     1  0  80   0 -  1471 -      13:49 pts/0    00:00:00 ps -elf
+```
+
+## Exiting an interactive session but leave the container running
+
+If you enter **exit** to leave the interactive session, the container will stop.  In order to exit the container without stopping it, you must press the following keyboard combination **CTRL Q P**
+
+## Viewing the properties of a container
+
+This will give you all sorts of information about the container including IP address, ports, volume information, and more.
+
+```
+docker inspect web1
+```
+
