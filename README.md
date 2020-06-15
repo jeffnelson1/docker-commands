@@ -229,6 +229,18 @@ F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
 
 If you enter **exit** to leave the interactive session, the container will stop.  In order to exit the container without stopping it, you must press the following keyboard combination **CTRL Q P**
 
+## Go back into a running container interactively
+
+```
+docker exec -it [name or ID] [command]
+```
+Example:
+
+```
+docker exec -it test01 bash
+```
+
+
 ## Viewing the properties of a container
 
 This will give you all sorts of information about the container including IP address, ports, volume information, and more.
@@ -236,4 +248,143 @@ This will give you all sorts of information about the container including IP add
 ```
 docker inspect web1
 ```
+
+# Volumes
+
+## Create a volume from the Docker host
+
+This will create a mount point in a container that points to externally mounted volumes on the host or other containers.
+
+```
+docker run -it -v [directory in container] --name test04 ubuntu bash
+```
+Example:
+```
+docker run -it -v /data --name test04 ubuntu bash
+```
+
+## View existing container on the host
+
+```
+docker volume ls
+```
+
+Example:
+
+```
+PSCore C:\src> docker volume ls
+DRIVER              VOLUME NAME
+local               3f9a536a7e270ed7f634bf9a7a5d8b93cbe6c3eeea5920af8964612e99fc935e
+```
+## Removing volumes from the host
+This show two different ways to delete volumes from the host.
+
+```
+docker rm -v [full containerId]
+```
+
+```
+docker volume prune
+```
+
+## Create a volume from your current local working directory
+
+This will mount your currently working directory to whatever directory you choose inside the contatiner.  Use ${pwd} for Windows and $(pwd) for Bash.
+
+```
+docker run -d -p 8080:80 -v ${pwd}:[path in container] [image]
+```
+
+Example:
+```
+docker run -d -p 8080:80 -v ${pwd}:/user/share/nginx/html nginx:alpine
+```
+
+## Create a volume by specifying a local directory
+This will mount a local directory that you specify to a directory in the container that you specifiy.
+
+```
+docker run -v [local path]:[path in contatiner] --name test02 -it ubuntu bash
+```
+
+Example:
+
+```
+docker run -v /c/src:/data --name test02 -it ubuntu bash
+```
+
+## View the mount point inside the container
+
+```
+df -H
+```
+
+Example:
+
+You can see the mount point **Mounted on** **/data**
+```
+root@dd685edd80b9:/# df -H
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          63G  1.3G   59G   3% /
+tmpfs            68M     0   68M   0% /dev
+tmpfs           1.1G     0  1.1G   0% /sys/fs/cgroup
+shm              68M     0   68M   0% /dev/shm
+grpcfuse        500G   76G  424G  16% /data
+```
+
+## View the mount point using the inspect command
+
+You'll have to scroll up a little to find the **Mounts** section
+```
+docker inspect test02
+```
+
+```
+   "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/host_mnt/c/src",
+                "Destination": "/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+```
+
+## Mapping a volume from one container to a new container
+Start a new container and use the -volumes-from flag to map the mapped volume from the source container to a new container being launched.
+
+```
+docker run --volumes-from test01 --name test02 -it ubuntu bash
+```
+
+# Networking
+
+## Different types of networks in containers
+
+### **Bridge Networking**
+A bridge network provides a bridge between the host's network and the containers via a vNIC on the host.
+
+### **Macvlan Networking**
+A macvlan network uses the same network as the host.
+
+### **Overlay Networking**
+Overlay networks give you the ablilty to span multiple hosts into one logical network, which allow container to communicate across hosts.
+
+## Listing current networks
+
+```
+docker network ls
+```
+Example:
+```
+PSCore C:\src> docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+c7f4e0611cac        bridge              bridge              local
+575c4777b9e2        host                host                local
+a60b3ffda7f5        none                null                local
+```
+
+
 
