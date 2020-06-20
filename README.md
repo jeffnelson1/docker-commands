@@ -487,5 +487,9 @@ PSCore C:\src> docker inspect macvlan
                     "Gateway": "172.20.2.1"
 ```
 
+## Removing a network
 
+```
+docker network rm [network name]
+```
 
