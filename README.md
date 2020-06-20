@@ -240,6 +240,11 @@ Example:
 docker exec -it test01 bash
 ```
 
+Another command that work similarly
+
+```
+docker attach test01
+```
 
 ## Viewing the properties of a container
 
@@ -384,6 +389,102 @@ NETWORK ID          NAME                DRIVER              SCOPE
 c7f4e0611cac        bridge              bridge              local
 575c4777b9e2        host                host                local
 a60b3ffda7f5        none                null                local
+```
+
+## Creating a new bridge network
+
+```
+docker network create --driver bridge [network name]
+```
+Example:
+```
+PSCore C:\src> docker network create --driver bridge my-bridge-network
+5c8a95c15a1e26f1e032e6deca830947d74dc46465261715ab4bceabaee03816
+PSCore C:\src> docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+ebfb84be617e        bridge              bridge              local
+575c4777b9e2        host                host                local
+5c8a95c15a1e        my-bridge-network   bridge              local
+a60b3ffda7f5        none                null                local
+```
+
+## View the properties of a network
+
+```
+docker inspect [network name]
+```
+Example:
+```
+PSCore C:\src> docker inspect my-bridge-network
+[
+    {
+        "Name": "my-bridge-network",
+        "Id": "5c8a95c15a1e26f1e032e6deca830947d74dc46465261715ab4bceabaee03816",
+        "Created": "2020-06-20T13:06:00.064863376Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+```
+
+## Running a container on a specific network
+
+```
+docker run -dit --name test03 --network [network name] [image] [command]
+```
+
+Example:
+```
+PSCore C:\src> docker run -dit --name test03 --network my-bridge-network ubuntu bash
+094c4c298ee0c7466f5721f9f8ee64564aaf9e0ece0a3cad9d104720618879d0
+PSCore C:\src> docker inspect my-bridge-network
+        "Containers": {
+            "094c4c298ee0c7466f5721f9f8ee64564aaf9e0ece0a3cad9d104720618879d0": {
+                "Name": "test03",
+                "EndpointID": "be258a2736d313ee624819be971010dfb5d9f9fc4af1c2099ec0292c75b49027",
+                "MacAddress": "02:42:ac:12:00:02",
+                "IPv4Address": "172.18.0.2/16",
+```
+## Creating a macvlan network
+```
+docker network create macvlan --subnet=172.20.2.0/24 --gateway=172.20.2.1 -o parent=eth0 macnet32
+```
+Example:
+
+In this example, I didn't specify the host's ethernet adapter.
+
+```
+PSCore C:\src> docker network create macvlan --subnet=172.20.2.0/24 --gateway=172.20.2.1
+9c24d15dc543c104b170bfd427eeddfd558478bea2631f9eef476547f57963e8
+PSCore C:\src> docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+ebfb84be617e        bridge              bridge              local
+575c4777b9e2        host                host                local
+9c24d15dc543        macvlan             bridge              local
+5c8a95c15a1e        my-bridge-network   bridge              local
+a60b3ffda7f5        none                null                local
+PSCore C:\src> docker inspect macvlan
+[
+    {
+        "Name": "macvlan",
+        "Id": "9c24d15dc543c104b170bfd427eeddfd558478bea2631f9eef476547f57963e8",
+        "Created": "2020-06-20T13:29:41.533694934Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.20.2.0/24",
+                    "Gateway": "172.20.2.1"
 ```
 
 
