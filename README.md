@@ -20,6 +20,27 @@ This will pull the nginx image with the alpine version.
 docker pull nginx:alpine
 ```
 
+## Building a Docker image
+
+This will build a docker image with a Docker file
+
+```
+docker build -t <repo name>/dotnetcore:1.0 .
+```
+Example:
+
+This example will build an image from your current directory, and if there is only one dockerfile in that directory.
+
+```
+docker build -t jeffnelson/dotnetcore:1.0 .
+```
+
+This example will build an image by specfying the dockerfile name.
+
+```
+docker build -t jeffnelson/dotnetcore:1.0 -f dockerfile.dotnetcore .
+```
+
 ## View existing local images
 
 This will show all of the existing Docker images on your local machine.
