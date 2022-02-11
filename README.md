@@ -1,5 +1,7 @@
 # Docker Overview
 
+This repo contains an overview of Docker commands and how to use them
+
 ## Common Docker Commands
 
 | Command
